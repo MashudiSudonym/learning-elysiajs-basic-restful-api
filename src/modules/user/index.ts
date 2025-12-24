@@ -1,18 +1,20 @@
 import { Elysia } from "elysia";
 import { authPlugin } from "../../utils/auth_plugin";
 import { UserService } from "./service";
+import { UserModel } from "./model";
 
 export const userRoutes = new Elysia({ prefix: "/api/user" })
   .use(authPlugin)
-  .get("/me", async ({ user, set }) => {
-    if (!user.id) {
-      set.status = 401;
-      return {
-        message: "Unauthorized",
-      };
-    }
-
+  .get("/me", async ({ user }) => {
     const result = await UserService.getMe(user.id);
 
-    return result;
+    return {
+      message: "User retrieved successfully",
+      data: result,
+    };
+   }, {
+    auth: true,
+    response: {
+      200: UserModel.meResponse,
+    },
   });

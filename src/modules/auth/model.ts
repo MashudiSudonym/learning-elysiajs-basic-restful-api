@@ -61,6 +61,7 @@ export namespace AuthModel {
     t.Literal("Credential not match"),
     t.Literal("User already exists"),
     t.Literal("Invalid token"),
+    t.Literal("Unauthorized"),
   ]);
   export type errorMessage = typeof errorMessage.static;
 }

@@ -10,6 +10,6 @@ export namespace UserModel {
   export type meResponse = typeof meResponse.static;
 
   // Error Message
-  export const errorMessage = t.Union([t.Literal("Invalid token")]);
+  export const errorMessage = t.Union([t.Literal("Invalid token"), t.Literal("Unauthorized")]);
   export type errorMessage = typeof errorMessage.static;
 }

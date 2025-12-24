@@ -24,7 +24,7 @@ export const authRoutes = new Elysia({ prefix: "/api/auth" })
       });
 
       refreshToken.set({
-        value: result.data.accessToken,
+        value: result.data.refreshToken,
         httpOnly: true,
         path: "/",
         maxAge: Number(Bun.env.REFRESH_TOKEN_EXP),
@@ -34,6 +34,10 @@ export const authRoutes = new Elysia({ prefix: "/api/auth" })
     },
     {
       body: AuthModel.signInBody,
+      response: {
+        200: AuthModel.signInResponse,
+        400: AuthModel.errorMessage,
+      },
     }
   )
   .post(
@@ -47,6 +51,10 @@ export const authRoutes = new Elysia({ prefix: "/api/auth" })
     },
     {
       body: AuthModel.signUpBody,
+      response: {
+        200: AuthModel.signUpResponse,
+        400: AuthModel.errorMessage,
+      },
     }
   )
   .post(
@@ -56,9 +64,7 @@ export const authRoutes = new Elysia({ prefix: "/api/auth" })
 
       if (!oldRefresh) {
         set.status = 401;
-        return {
-          message: "Invalid token",
-        };
+        return "Invalid token" as AuthModel.errorMessage;
       }
 
       const result = await AuthService.refreshToken(oldRefresh, jwt, {
@@ -82,24 +88,29 @@ export const authRoutes = new Elysia({ prefix: "/api/auth" })
       });
 
       return result;
+    },
+    {
+      response: {
+        200: AuthModel.refreshResponse,
+        401: AuthModel.errorMessage,
+      },
     }
   )
   .use(authPlugin)
   .post(
     "/logout",
-    async ({ cookie: { accessToken, refreshToken }, set, user }) => {
-      if (!user.id) {
-        set.status = 401;
-        return {
-          message: "Unauthorized",
-        };
-      }
-
+    async ({ cookie: { accessToken, refreshToken }, user }) => {
       accessToken.remove();
       refreshToken.remove();
 
       const res = await AuthService.logout(user.id);
 
       return res;
+    },
+    {
+      auth: true,
+      response: {
+        200: AuthModel.messageResponse,
+      },
     }
   );

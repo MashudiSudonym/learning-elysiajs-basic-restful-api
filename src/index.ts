@@ -1,11 +1,11 @@
 import { Elysia } from "elysia";
-import { swagger } from "@elysiajs/swagger";
+import { openapi } from "@elysiajs/openapi";
 import { userRoutes } from "./modules/user";
 import { authRoutes } from "./modules/auth";
 
 const app = new Elysia()
   .use(
-    swagger({
+    openapi({
       path: "/docs",
       documentation: {
         info: {

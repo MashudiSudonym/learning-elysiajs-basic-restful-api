@@ -1,5 +1,5 @@
 import { prismaClient } from "../../utils/prisma";
-import { AuthModel } from "../auth/model";
+import { UserModel } from "./model";
 import { status } from "elysia";
 
 export abstract class UserService {
@@ -11,7 +11,7 @@ export abstract class UserService {
     });
 
     if (!user) {
-      throw status(401, "Invalid token" as AuthModel.errorMessage);
+      throw status(401, "Unauthorized" as UserModel.errorMessage);
     }
 
     return user;
