@@ -6,7 +6,7 @@ export const authPlugin = new Elysia({ name: 'auth' })
   .use(initJWT)
   .macro({
     auth: {
-      async resolve({ jwt, cookie: { accessToken }, set, status }) {
+      async resolve({ jwt, cookie: { accessToken }, status }) {
         if (!accessToken.value) {
           return status(401);
         }
