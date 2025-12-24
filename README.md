@@ -101,16 +101,24 @@ src/
 │   │   ├── index.ts   # Auth routes/controller
 │   │   ├── service.ts # Business logic
 │   │   └── model.ts   # Request/Response schemas
-│   └── user/          # User management module
-│       ├── index.ts   # User routes/controller
-│       ├── service.ts # Business logic
-│       └── model.ts   # Request/Response schemas
+│   ├── user/          # User management module
+│   │   ├── index.ts   # User routes/controller
+│   │   ├── service.ts # Business logic
+│   │   └── model.ts   # Request/Response schemas
+│   └── shared/        # Shared modules
+│       ├── middleware/
+│       │   └── auth_plugin.ts # Authentication middleware
+│       └── model/
+│           └── user_base_model.ts # Shared user schema
 ├── utils/
-│   ├── auth_plugin.ts # Authentication middleware
 │   ├── jwt.ts         # JWT utilities
 │   ├── prisma.ts      # Database client
-│   └── user_base_model.ts # Shared user schema
+│   └── util.ts        # Utility functions
 └── index.ts           # Main application entry
+prisma/
+├── migrations/        # Database migrations
+├── schema.prisma      # Prisma schema
+└── prisma.config.ts   # Prisma configuration
 ```
 
 ## Available Scripts

@@ -1,5 +1,5 @@
 import { Elysia } from "elysia";
-import { authPlugin } from "../../utils/auth_plugin";
+import { authPlugin } from "../../shared/middleware/auth_plugin";
 import { UserService } from "./service";
 import { UserModel } from "./model";
 

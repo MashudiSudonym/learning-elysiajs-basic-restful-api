@@ -1,6 +1,6 @@
 import { Elysia } from "elysia";
-import { prismaClient } from "./prisma";
-import { initJWT } from "./jwt";
+import { prismaClient } from "../../utils/prisma";
+import { initJWT } from "../../utils/jwt";
 
 export const authPlugin = new Elysia({ name: 'auth' })
   .use(initJWT)

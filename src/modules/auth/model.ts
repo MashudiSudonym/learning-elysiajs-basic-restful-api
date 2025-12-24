@@ -1,5 +1,5 @@
 import { t } from "elysia";
-import { userBase } from "../../utils/user_base_model";
+import { userBase } from "../../shared/model/user_base_model";
 
 export namespace AuthModel {
   // Request Body

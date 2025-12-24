@@ -1,7 +1,7 @@
 import { Elysia } from "elysia";
 import { AuthModel } from "./model";
 import { getExpTimeStamp } from "../../utils/util";
-import { authPlugin } from "../../utils/auth_plugin";
+import { authPlugin } from "../../shared/middleware/auth_plugin";
 import { initJWT } from "../../utils/jwt";
 import { AuthService } from "./service";
 
