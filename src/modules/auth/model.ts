@@ -17,6 +17,9 @@ export namespace AuthModel {
   });
   export type signInBody = typeof signInBody.static;
 
+  export const refreshTokenBody = t.Object({ refreshToken: t.String() });
+  export type refreshTokenBody = typeof refreshTokenBody.static;
+
   // Response DTO
   export const authToken = t.Object({
     accessToken: t.String(),

@@ -2,10 +2,11 @@
   "name": "elysia-prisma-jwt-auth",
   "version": "1.0.50",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "bun test",
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
+    "@elysiajs/bearer": "^1.4.2",
     "@elysiajs/jwt": "^1.4.0",
     "@elysiajs/openapi": "^1.4.12",
     "@prisma/adapter-pg": "^7.2.0",

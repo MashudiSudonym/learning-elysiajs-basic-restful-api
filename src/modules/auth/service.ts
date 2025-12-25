@@ -92,7 +92,7 @@ export abstract class AuthService {
       where: {
         id: user.id,
       },
-      data: { isOnline: true, refreshToken: refreshToken },
+      data: { isOnline: true },
     });
 
     return {
@@ -106,17 +106,13 @@ export abstract class AuthService {
   }
 
   static async refreshToken(
-    refreshTokenFromCookie: string | undefined,
+    refreshToken: string,
     jwt: JwtSigner,
     cfg: TokenConfig
   ) {
     const { getExpTimeStamp, accessTokenExp, refreshTokenExp } = cfg;
 
-    if (!refreshTokenFromCookie) {
-      throw status(401, "Invalid token" as AuthModel.errorMessage);
-    }
-
-    const payload = await jwt.verify(refreshTokenFromCookie);
+    const payload = await jwt.verify(refreshToken);
 
     if (!payload?.sub) {
       throw status(401, "Invalid token" as AuthModel.errorMessage);
@@ -139,23 +135,16 @@ export abstract class AuthService {
       exp: getExpTimeStamp(accessTokenExp),
     });
 
-    const refreshToken = await jwt.sign({
+    const newRefreshToken = await jwt.sign({
       sub: user.id,
       exp: getExpTimeStamp(refreshTokenExp),
-    });
-
-    const updatedUser = await prismaClient.user.update({
-      where: {
-        id: user.id,
-      },
-      data: { refreshToken: refreshToken },
     });
 
     return {
       message: "refresh token success",
       data: {
         accessToken: accessToken,
-        refreshToken: refreshToken,
+        refreshToken: newRefreshToken,
       },
     };
   }
@@ -167,7 +156,6 @@ export abstract class AuthService {
       },
       data: {
         isOnline: false,
-        refreshToken: null,
       },
     });
 

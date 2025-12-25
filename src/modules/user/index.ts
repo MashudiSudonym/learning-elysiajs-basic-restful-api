@@ -14,6 +14,7 @@ export const userRoutes = new Elysia({ prefix: "/api/user" })
     };
    }, {
     auth: true,
+    security: [{ bearerAuth: [] }],
     response: {
       200: UserModel.meResponse,
     },

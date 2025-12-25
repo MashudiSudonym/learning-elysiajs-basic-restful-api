@@ -92,6 +92,111 @@ Once the server is running, visit `http://localhost:3000/docs` to access the int
 ### User Management
 - `GET /api/user/me` - Get current user profile (requires authentication)
 
+## API Usage Examples
+
+### 1. Sign Up
+```bash
+curl -X POST http://localhost:3000/api/auth/sign-up \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "securepassword",
+    "isAdult": true
+  }'
+```
+
+**Response:**
+```json
+{
+  "message": "Account created successfully",
+  "data": {
+    "user": {
+      "id": "cmjkxjtt60000dam69qpi4fg5",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "isOnline": false,
+      "isAdult": true
+    }
+  }
+}
+```
+
+### 2. Sign In
+```bash
+curl -X POST http://localhost:3000/api/auth/sign-in \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "john@example.com",
+    "password": "securepassword"
+  }'
+```
+
+**Response:**
+```json
+{
+  "message": "sign in success",
+  "data": {
+    "user": { ... },
+    "accessToken": "eyJhbGciOiJIUzI1NiIs...",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIs..."
+  }
+}
+```
+
+### 3. Get User Profile (Protected)
+```bash
+curl -X GET http://localhost:3000/api/user/me \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN_HERE"
+```
+
+**Response:**
+```json
+{
+  "message": "User retrieved successfully",
+  "data": {
+    "id": "cmjkxjtt60000dam69qpi4fg5",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "isOnline": true,
+    "isAdult": true
+  }
+}
+```
+
+### 4. Refresh Token
+```bash
+curl -X POST http://localhost:3000/api/auth/refresh \
+  -H "Content-Type: application/json" \
+  -d '{
+    "refreshToken": "YOUR_REFRESH_TOKEN_HERE"
+  }'
+```
+
+**Response:**
+```json
+{
+  "message": "refresh token success",
+  "data": {
+    "accessToken": "new_access_token",
+    "refreshToken": "new_refresh_token"
+  }
+}
+```
+
+### 5. Logout
+```bash
+curl -X POST http://localhost:3000/api/auth/logout \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN_HERE"
+```
+
+**Response:**
+```json
+{
+  "message": "logout successfully"
+}
+```
+
 ## Project Structure
 
 ```

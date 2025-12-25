@@ -1,4 +1,4 @@
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
 import { AuthModel } from "./model";
 import { getExpTimeStamp } from "../../utils/util";
 import { authPlugin } from "../../shared/middleware/auth_plugin";
@@ -7,39 +7,25 @@ import { AuthService } from "./service";
 
 export const authRoutes = new Elysia({ prefix: "/api/auth" })
   .use(initJWT)
-  .post(
-    "/sign-in",
-    async ({ body, jwt, cookie: { accessToken, refreshToken } }) => {
-      const result = await AuthService.signIn(body, jwt, {
-        getExpTimeStamp,
-        accessTokenExp: Number(Bun.env.ACCESS_TOKEN_EXP),
-        refreshTokenExp: Number(Bun.env.REFRESH_TOKEN_EXP),
-      });
+   .post(
+     "/sign-in",
+     async ({ body, jwt }) => {
+       const result = await AuthService.signIn(body, jwt, {
+         getExpTimeStamp,
+         accessTokenExp: Number(Bun.env.ACCESS_TOKEN_EXP),
+         refreshTokenExp: Number(Bun.env.REFRESH_TOKEN_EXP),
+       });
 
-      accessToken.set({
-        value: result.data.accessToken,
-        httpOnly: true,
-        path: "/",
-        maxAge: Number(Bun.env.ACCESS_TOKEN_EXP),
-      });
-
-      refreshToken.set({
-        value: result.data.refreshToken,
-        httpOnly: true,
-        path: "/",
-        maxAge: Number(Bun.env.REFRESH_TOKEN_EXP),
-      });
-
-      return result;
-    },
-    {
-      body: AuthModel.signInBody,
-      response: {
-        200: AuthModel.signInResponse,
-        400: AuthModel.errorMessage,
-      },
-    }
-  )
+       return result;
+     },
+     {
+       body: AuthModel.signInBody,
+       response: {
+         200: AuthModel.signInResponse,
+         400: AuthModel.errorMessage,
+       },
+     }
+   )
   .post(
     "/sign-up",
     async ({ body }) => {
@@ -57,60 +43,38 @@ export const authRoutes = new Elysia({ prefix: "/api/auth" })
       },
     }
   )
-  .post(
-    "/refresh",
-    async ({ cookie: { accessToken, refreshToken }, jwt, set }) => {
-      const oldRefresh = refreshToken.value as string;
+   .post(
+     "/refresh",
+     async ({ body, jwt }) => {
+       const result = await AuthService.refreshToken(body.refreshToken, jwt, {
+         getExpTimeStamp,
+         accessTokenExp: Number(Bun.env.ACCESS_TOKEN_EXP),
+         refreshTokenExp: Number(Bun.env.REFRESH_TOKEN_EXP),
+       });
 
-      if (!oldRefresh) {
-        set.status = 401;
-        return "Invalid token" as AuthModel.errorMessage;
-      }
+       return result;
+     },
+     {
+       body: AuthModel.refreshTokenBody,
+       response: {
+         200: AuthModel.refreshResponse,
+         401: AuthModel.errorMessage,
+       },
+     }
+   )
+   .use(authPlugin)
+   .post(
+     "/logout",
+     async ({ user }) => {
+       const res = await AuthService.logout(user.id);
 
-      const result = await AuthService.refreshToken(oldRefresh, jwt, {
-        getExpTimeStamp,
-        accessTokenExp: Number(Bun.env.ACCESS_TOKEN_EXP),
-        refreshTokenExp: Number(Bun.env.REFRESH_TOKEN_EXP),
-      });
-
-      accessToken.set({
-        value: result.data.accessToken,
-        httpOnly: true,
-        path: "/",
-        maxAge: Number(Bun.env.ACCESS_TOKEN_EXP),
-      });
-
-      refreshToken.set({
-        value: result.data.refreshToken,
-        httpOnly: true,
-        path: "/",
-        maxAge: Number(Bun.env.REFRESH_TOKEN_EXP),
-      });
-
-      return result;
-    },
-    {
-      response: {
-        200: AuthModel.refreshResponse,
-        401: AuthModel.errorMessage,
-      },
-    }
-  )
-  .use(authPlugin)
-  .post(
-    "/logout",
-    async ({ cookie: { accessToken, refreshToken }, user }) => {
-      accessToken.remove();
-      refreshToken.remove();
-
-      const res = await AuthService.logout(user.id);
-
-      return res;
-    },
-    {
-      auth: true,
-      response: {
-        200: AuthModel.messageResponse,
-      },
-    }
-  );
+       return res;
+     },
+     {
+       auth: true,
+       security: [{ bearerAuth: [] }],
+       response: {
+         200: AuthModel.messageResponse,
+       },
+     }
+   );
