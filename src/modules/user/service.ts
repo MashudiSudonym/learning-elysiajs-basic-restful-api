@@ -16,4 +16,20 @@ export abstract class UserService {
 
     return user;
   }
+  static async editMe(userId: string, body: UserModel.editMeBody) {
+    const user = await prismaClient.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        name: body.name,
+      },
+    });
+
+    if (!user) {
+      throw status(401, "Unauthorized" as UserModel.errorMessage);
+    }
+
+    return user;
+  }
 }

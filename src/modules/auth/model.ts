@@ -20,11 +20,6 @@ export namespace AuthModel {
   export const refreshTokenBody = t.Object({ refreshToken: t.String() });
   export type refreshTokenBody = typeof refreshTokenBody.static;
 
-  export const forgotPasswordBody = t.Object({
-    email: t.String({ format: "email" }),
-  });
-  export type forgotPasswordBody = typeof forgotPasswordBody.static;
-
   // Response DTO
   export const authToken = t.Object({
     accessToken: t.String(),
