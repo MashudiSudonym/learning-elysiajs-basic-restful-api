@@ -2,6 +2,12 @@ import { t } from "elysia";
 import { userBase } from "../../shared/model/user_base_model";
 
 export namespace UserModel {
+  // Request Body
+  export const editMeBody = t.Object({
+    name: t.String(),
+  });
+  export type editMeBody = typeof editMeBody.static;
+
   // Response DTO
   export const meResponse = t.Object({
     message: t.String(),
@@ -10,6 +16,9 @@ export namespace UserModel {
   export type meResponse = typeof meResponse.static;
 
   // Error Message
-  export const errorMessage = t.Union([t.Literal("Invalid token"), t.Literal("Unauthorized")]);
+  export const errorMessage = t.Union([
+    t.Literal("Invalid token"),
+    t.Literal("Unauthorized"),
+  ]);
   export type errorMessage = typeof errorMessage.static;
 }
